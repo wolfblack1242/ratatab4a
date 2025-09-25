@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "596271526965",
+    "project_id": "zxzx-49f14",
+    "storage_bucket": "zxzx-49f14.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:596271526965:android:08518467e2936068e92d7c",
+        "android_client_info": {
+          "package_name": "ir.shz.shombol"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2oB4x87NVBLYFiSmhP80a-gK6VorVw-Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

